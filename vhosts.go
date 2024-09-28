@@ -169,9 +169,23 @@ type VhostSettings struct {
 	Tracing bool `json:"tracing"`
 }
 
+// extend VhostSettings struct in another struct to fix 'DefaultQueueType' for RabbitMQ <= 3.10
+type extendedVhostSettings struct {
+	VhostSettings
+	FixDefaultQueueType string `json:"defaultqueuetype,omitempty"`
+}
+
 // PutVhost creates or updates a virtual host.
 func (c *Client) PutVhost(vhostname string, settings VhostSettings) (res *http.Response, err error) {
-	body, err := json.Marshal(settings)
+	// ReLoad the settings with the extended vhost settings
+	var mySettings extendedVhostSettings
+	mySettings.Description = settings.Description
+	mySettings.Tags = settings.Tags
+	mySettings.DefaultQueueType = settings.DefaultQueueType
+	mySettings.Tracing = settings.Tracing
+	mySettings.FixDefaultQueueType = settings.DefaultQueueType
+
+	body, err := json.Marshal(mySettings)
 	if err != nil {
 		return nil, err
 	}
