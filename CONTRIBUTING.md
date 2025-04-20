@@ -37,3 +37,9 @@ The project uses [Ginkgo](http://onsi.github.io/ginkgo/) and [Gomega](https://gi
 To clone dependencies and run tests, use `make`. It is also possible
 to use the brilliant [Ginkgo CLI runner](http://onsi.github.io/ginkgo/#the-ginkgo-cli) e.g.
 to only run a subset of tests.
+
+### Running Tests from Docker
+
+1. Run a RabbitMQ container : `docker run -it -p 15672:15672 -p 5672:5672 --name rabbitmq-hole rabbitmq:4-management`
+2. Init testing environment : `RABBITHOLE_RABBITMQCTL=DOCKER:rabbitmq-hole bin/ci/before_build.sh`
+3. Launch the test suite: `make` 
